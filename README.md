@@ -20,7 +20,7 @@ PDF -> 文本抽取 -> 章节标注 -> chunk -> embedding -> Chroma 检索 -> LL
 
 ### 快速入口
 
-详细命令见 [tip.md](tip.md)。
+详细命令见 [TIPS.md](TIPS.md)。
 
 常用入口：
 
@@ -78,7 +78,7 @@ PDF -> text extraction -> section annotation -> chunking -> embeddings -> Chroma
 
 ### Quick Links
 
-Detailed commands are in [tip.md](tip.md).
+Detailed commands are in [TIPS.md](TIPS.md).
 
 Common local URLs:
 

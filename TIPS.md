@@ -204,7 +204,7 @@ web/.env.local
 web/.env.example
 README.md
 NOTICE.md
-tip.md
+TIPS.md
 src/
 scripts/
 tests/
