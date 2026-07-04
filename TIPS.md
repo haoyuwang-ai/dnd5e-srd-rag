@@ -73,19 +73,19 @@ PDF 文件不提交到 Git。
 输出引用式上下文：
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\ask.py "How does Cleric spellcasting work?" --top-k 3
+.\.venv\Scripts\python.exe scripts\search_context.py "How does Cleric spellcasting work?" --top-k 3
 ```
 
 本地 Ollama 问答：
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\ask_ollama_llm.py "What does Fire Bolt do?" --top-k 3
+.\.venv\Scripts\python.exe scripts\chat_cli.py "What does Fire Bolt do?" --top-k 3
 ```
 
 显示传给 LLM 的上下文：
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\ask_ollama_llm.py "What does Fire Bolt do?" --top-k 3 --show-context
+.\.venv\Scripts\python.exe scripts\chat_cli.py "What does Fire Bolt do?" --top-k 3 --show-context
 ```
 
 Ollama 模型准备：
@@ -275,13 +275,13 @@ Semantic search:
 Citation-style context:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\ask.py "How does Cleric spellcasting work?" --top-k 3
+.\.venv\Scripts\python.exe scripts\search_context.py "How does Cleric spellcasting work?" --top-k 3
 ```
 
 Local Ollama answer:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\ask_ollama_llm.py "What does Fire Bolt do?" --top-k 3
+.\.venv\Scripts\python.exe scripts\chat_cli.py "What does Fire Bolt do?" --top-k 3
 ```
 
 Prepare the Ollama model:

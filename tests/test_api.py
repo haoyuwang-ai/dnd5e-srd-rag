@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
 from dnd5e_srd_rag import api
-from dnd5e_srd_rag.ollama_answer import OllamaAnswerError
+from dnd5e_srd_rag.llm_answer import LLMAnswerError
 
 
 client = TestClient(api.app)
@@ -71,7 +71,7 @@ def test_chat_returns_503_when_ollama_fails(monkeypatch) -> None:
         section: str | None,
         model: str,
     ) -> dict:
-        raise OllamaAnswerError("Could not connect to Ollama at http://localhost:11434.")
+        raise LLMAnswerError("Could not connect to Ollama at http://localhost:11434.")
 
     monkeypatch.setattr(api, "chat_with_srd", fake_chat_with_srd)
 

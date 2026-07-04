@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 
 from dnd5e_srd_rag import config
 from dnd5e_srd_rag.chat_service import chat_with_srd
-from dnd5e_srd_rag.ollama_answer import OllamaAnswerError
+from dnd5e_srd_rag.llm_answer import LLMAnswerError
 
 # 创建 FastAPI 应用，http://127.0.0.1:8000/docs会展示以下内容
 app = FastAPI(
@@ -59,8 +59,8 @@ def health() -> dict[str, str]:
 # chat API 接口
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(request: ChatRequest) -> ChatResponse:
-    # 调用 chat_with_srd 函数处理请求，这里就是ollama，但具体是什么API不关心。
-    # try捕获 OllamaAnswerError 异常，如果发生异常，返回503错误。
+    # 调用 chat_with_srd 函数处理请求，具体 LLM provider 由后端配置决定。
+    # 捕获 LLMAnswerError 异常，如果发生异常，返回503错误。
     try:
         result = chat_with_srd(
             question=request.question,
@@ -68,7 +68,7 @@ def chat(request: ChatRequest) -> ChatResponse:
             section=request.section,
             model=request.model,
         )
-    except OllamaAnswerError as error:
+    except LLMAnswerError as error:
         raise HTTPException(
             status_code=503,
             detail=str(error),

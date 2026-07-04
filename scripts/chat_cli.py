@@ -1,6 +1,6 @@
 """
-使用本地 Ollama LLM 回答 SRD 问题。
-Answer SRD questions with a local Ollama LLM.
+使用本地 Ollama LLM 回答 SRD 问题。，使用命令行。
+Answer SRD questions with a local Ollama LLM. CLI interface.
 """
 
 from __future__ import annotations
@@ -8,7 +8,7 @@ from __future__ import annotations
 import argparse
 
 from dnd5e_srd_rag import config
-from dnd5e_srd_rag.ollama_answer import OllamaAnswerError, answer_with_ollama
+from dnd5e_srd_rag.llm_answer import LLMAnswerError, answer_with_ollama
 from dnd5e_srd_rag.retrieval import (
     format_source,
     preview_text,
@@ -113,7 +113,7 @@ def main() -> None:
             model=args.model,
             base_url=args.base_url,
         )
-    except OllamaAnswerError as error:
+    except LLMAnswerError as error:
         print("Ollama error:")
         print(error)
         print()

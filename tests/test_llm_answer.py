@@ -1,4 +1,4 @@
-from dnd5e_srd_rag.ollama_answer import build_context, build_messages
+from dnd5e_srd_rag.llm_answer import build_context, build_messages
 
 
 def _record() -> dict:

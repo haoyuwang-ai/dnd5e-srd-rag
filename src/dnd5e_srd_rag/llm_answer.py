@@ -1,6 +1,10 @@
 """
-Ollama 本地 LLM 回答工具。
-Ollama local LLM answer utilities.
+LLM 回答工具。
+LLM answer utilities.
+
+当前实现使用本地 Ollama，后续可扩展为 OpenAI-compatible provider。
+The current implementation uses local Ollama and can be extended to
+OpenAI-compatible providers later.
 """
 
 from __future__ import annotations
@@ -13,8 +17,8 @@ from dnd5e_srd_rag import config
 from dnd5e_srd_rag.retrieval import format_source, preview_text
 
 # 命名异常类
-class OllamaAnswerError(RuntimeError):
-    """Raised when Ollama cannot generate an answer."""
+class LLMAnswerError(RuntimeError):
+    """Raised when the configured LLM provider cannot generate an answer."""
     pass
 
 # 把检索到的 records 组装成给 LLM 使用的上下文。
@@ -100,37 +104,37 @@ def answer_with_ollama(
         )
         response.raise_for_status()
     except httpx.ConnectError as error:
-        raise OllamaAnswerError(
+        raise LLMAnswerError(
             f"Could not connect to Ollama at {base_url}. "
             "Make sure Ollama is installed and running. "
             "You can test it with: ollama --version"
         ) from error
     except httpx.TimeoutException as error:
-        raise OllamaAnswerError(
+        raise LLMAnswerError(
             f"Ollama request timed out after {timeout} seconds. "
             f"The model '{model}' may still be loading or may be too slow for this machine."
         ) from error
     except httpx.HTTPStatusError as error:
         response_text = error.response.text
-        raise OllamaAnswerError(
+        raise LLMAnswerError(
             f"Ollama returned HTTP {error.response.status_code} from {url}. "
             f"Model: {model}. Response: {response_text}"
         ) from error
     except httpx.HTTPError as error:
-        raise OllamaAnswerError(
+        raise LLMAnswerError(
             f"Ollama request failed: {error}"
         ) from error
 
     try:
         data = response.json()
     except ValueError as error:
-        raise OllamaAnswerError(
+        raise LLMAnswerError(
             f"Ollama returned a non-JSON response from {url}: {response.text}"
         ) from error
 
     answer = data.get("message", {}).get("content")
     if not answer:
-        raise OllamaAnswerError(
+        raise LLMAnswerError(
             f"Ollama response did not contain message.content: {data}"
         )
 

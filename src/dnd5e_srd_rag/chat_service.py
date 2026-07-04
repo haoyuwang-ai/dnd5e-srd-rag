@@ -8,7 +8,7 @@ from __future__ import annotations
 from typing import Any
 
 from dnd5e_srd_rag import config
-from dnd5e_srd_rag.ollama_answer import answer_with_ollama
+from dnd5e_srd_rag.llm_answer import answer_with_ollama
 from dnd5e_srd_rag.retrieval import retrieve_chunks, format_source
 
 # 引用溯源，并且格式化，有利于后续前端输出。
