@@ -2,7 +2,8 @@
 
 ## 下一步
 
-- [ ] 基于 `POST /api/chat` 搭建第一版 Next.js 聊天 UI。
+- [ ] 优化自动检索策略，避免用户手动选择 section。
+- [ ] 美化 Next.js 聊天页面，优化 loading、error 和 sources 展示。
 
 ## RAG 质量
 
