@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from dnd5e_srd_rag import config
-from dnd5e_srd_rag.chat_service import chat_with_srd
+from dnd5e_srd_rag.chat_service import answer_srd_question
 from dnd5e_srd_rag.llm_answer import LLMAnswerError
 
 # 创建 FastAPI 应用，http://127.0.0.1:8000/docs会展示以下内容
@@ -37,7 +37,7 @@ class ChatRequest(BaseModel):
     question: str = Field(..., min_length=1)
     top_k: int = Field(default=config.DEFAULT_TOP_K, ge=1, le=20)
     section: str | None = None # 可选section过滤，因为现在不是很准确。
-    model: str = config.DEFAULT_OLLAMA_MODEL
+    model: str | None = None # 可选model参数，默认使用后端配置的LLM模型。
 
 # 溯源的形式
 class SourceItem(BaseModel):
@@ -62,7 +62,7 @@ def chat(request: ChatRequest) -> ChatResponse:
     # 调用 chat_with_srd 函数处理请求，具体 LLM provider 由后端配置决定。
     # 捕获 LLMAnswerError 异常，如果发生异常，返回503错误。
     try:
-        result = chat_with_srd(
+        result = answer_srd_question(
             question=request.question,
             top_k=request.top_k,
             section=request.section,

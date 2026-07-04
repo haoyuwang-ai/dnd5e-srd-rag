@@ -16,6 +16,8 @@ import httpx
 from dnd5e_srd_rag import config
 from dnd5e_srd_rag.retrieval import format_source, preview_text
 
+from openai import APIConnectionError, APIStatusError, APITimeoutError, OpenAI
+
 # 命名异常类
 class LLMAnswerError(RuntimeError):
     """Raised when the configured LLM provider cannot generate an answer."""
@@ -139,3 +141,85 @@ def answer_with_ollama(
         )
 
     return answer.strip()
+
+# 调用 OpenAI-compatible API 让 LLM 基于检索上下文生成回答。
+def answer_with_openai_compatible(
+    question: str,
+    records: list[dict[str, Any]],
+    model: str = config.DEFAULT_OPENAI_MODEL,
+    base_url: str = config.DEFAULT_OPENAI_BASE_URL,
+    api_key: str | None = config.DEFAULT_OPENAI_API_KEY,
+    timeout: float = 180,
+) -> str:
+    """Generate an answer with an OpenAI-compatible chat completions API."""
+    if not records:
+        return "I could not find relevant SRD context for this question."
+
+    if not api_key:
+        raise LLMAnswerError("OPENAI_API_KEY is required for openai_compatible LLM.")
+
+    client = OpenAI(
+        api_key=api_key,
+        base_url=base_url,
+        timeout=timeout,
+    )
+
+    try:
+        completion = client.chat.completions.create(
+            model=model,
+            messages=build_messages(question, records),
+        )
+    except APIConnectionError as error:
+        raise LLMAnswerError(
+            f"Could not connect to OpenAI-compatible API at {base_url}."
+        ) from error
+    except APITimeoutError as error:
+        raise LLMAnswerError(
+            f"OpenAI-compatible request timed out after {timeout} seconds. "
+            f"Model: {model}."
+        ) from error
+    except APIStatusError as error:
+        raise LLMAnswerError(
+            f"OpenAI-compatible API returned HTTP {error.status_code}. "
+            f"Model: {model}. Response: {error.response.text}"
+        ) from error
+
+    if not completion.choices:
+        raise LLMAnswerError("no choices returned from OpenAI-compatible API.")
+
+    answer = completion.choices[0].message.content
+    if not answer:
+        raise LLMAnswerError(
+            f"OpenAI-compatible response did not contain choices[0].message.content: {completion}"
+        )
+
+    return answer.strip()
+
+# answer入口
+def answer_with_llm(
+    question: str,
+    records: list[dict[str, Any]],
+    model: str | None = None,
+) -> str:
+    """Generate an answer with the configured LLM provider."""
+    provider = config.DEFAULT_LLM_PROVIDER.lower()
+
+    if provider == "openai_compatible":
+        return answer_with_openai_compatible(
+            question=question,
+            records=records,
+            model=model or config.DEFAULT_OPENAI_MODEL,
+            base_url=config.DEFAULT_OPENAI_BASE_URL,
+            api_key=config.DEFAULT_OPENAI_API_KEY,)
+    elif provider == "ollama":
+        return answer_with_ollama(
+            question=question,
+            records=records,
+            model=model or config.DEFAULT_OLLAMA_MODEL,
+            base_url=config.DEFAULT_OLLAMA_BASE_URL,
+        )
+    else:
+        raise LLMAnswerError(
+            f"Unsupported LLM provider: {provider}. "
+            "Supported providers are: 'ollama', 'openai_compatible'."
+        )
