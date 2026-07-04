@@ -59,3 +59,9 @@ DEFAULT_OLLAMA_MODEL = os.getenv(
     "OLLAMA_MODEL",
     "llama3.1:8b",
 )
+
+# openai 兼容的 LLM API
+DEFAULT_LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")
+DEFAULT_OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+DEFAULT_OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+DEFAULT_OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.4-nano")

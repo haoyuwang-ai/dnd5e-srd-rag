@@ -15,11 +15,11 @@ def test_health_returns_ok() -> None:
 
 
 def test_chat_returns_answer_and_sources(monkeypatch) -> None:
-    def fake_chat_with_srd(
+    def fake_answer_srd_question(
         question: str,
         top_k: int,
         section: str | None,
-        model: str,
+        model: str | None,
     ) -> dict:
         assert question == "What does Fire Bolt do?"
         assert top_k == 3
@@ -38,7 +38,7 @@ def test_chat_returns_answer_and_sources(monkeypatch) -> None:
             ],
         }
 
-    monkeypatch.setattr(api, "chat_with_srd", fake_chat_with_srd)
+    monkeypatch.setattr(api, "answer_srd_question", fake_answer_srd_question)
 
     response = client.post(
         "/api/chat",
@@ -65,15 +65,15 @@ def test_chat_returns_answer_and_sources(monkeypatch) -> None:
 
 
 def test_chat_returns_503_when_ollama_fails(monkeypatch) -> None:
-    def fake_chat_with_srd(
+    def fake_answer_srd_question(
         question: str,
         top_k: int,
         section: str | None,
-        model: str,
+        model: str | None,
     ) -> dict:
         raise LLMAnswerError("Could not connect to Ollama at http://localhost:11434.")
 
-    monkeypatch.setattr(api, "chat_with_srd", fake_chat_with_srd)
+    monkeypatch.setattr(api, "answer_srd_question", fake_answer_srd_question)
 
     response = client.post(
         "/api/chat",

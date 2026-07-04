@@ -25,7 +25,7 @@ export async function askSrd(question: string): Promise<ChatResponse> {
     body: JSON.stringify({
       question,
       top_k: 5,
-      model: "llama3.1:8b",
+      
     }),
   });
 

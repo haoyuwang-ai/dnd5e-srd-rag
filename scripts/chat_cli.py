@@ -8,7 +8,7 @@ from __future__ import annotations
 import argparse
 
 from dnd5e_srd_rag import config
-from dnd5e_srd_rag.llm_answer import LLMAnswerError, answer_with_ollama
+from dnd5e_srd_rag.llm_answer import LLMAnswerError, answer_with_llm
 from dnd5e_srd_rag.retrieval import (
     format_source,
     preview_text,
@@ -107,11 +107,10 @@ def main() -> None:
         print_context(records, context_length=args.context_length)
 
     try:
-        answer = answer_with_ollama(
+        answer = answer_with_llm(
             question=args.question,
             records=records,
             model=args.model,
-            base_url=args.base_url,
         )
     except LLMAnswerError as error:
         print("Ollama error:")

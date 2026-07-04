@@ -8,7 +8,7 @@ from __future__ import annotations
 from typing import Any
 
 from dnd5e_srd_rag import config
-from dnd5e_srd_rag.llm_answer import answer_with_ollama
+from dnd5e_srd_rag.llm_answer import answer_with_llm
 from dnd5e_srd_rag.retrieval import retrieve_chunks, format_source
 
 # 引用溯源，并且格式化，有利于后续前端输出。
@@ -48,26 +48,24 @@ def build_source_items(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
     return source_items
 
-# 构建和ollama聊天内容。
-def chat_with_srd(
+# 回答问题，检索 SRD chunks，调用 LLM 生成回答，并返回回答和溯源。
+def answer_srd_question(
     question: str,
     top_k: int = config.DEFAULT_TOP_K,
     section: str | None = None,
-    model: str = config.DEFAULT_OLLAMA_MODEL,
-    base_url: str = config.DEFAULT_OLLAMA_BASE_URL,
+    model: str | None = None,
 ) -> dict[str, Any]:
-    """Retrieve SRD chunks, ask Ollama, and return answer plus deterministic sources."""
+    """Retrieve SRD chunks, ask the configured LLM provider, and return answer plus deterministic sources."""
     records = retrieve_chunks(
         question,
         top_k=top_k,
         section=section,
     )
 
-    answer = answer_with_ollama(
+    answer = answer_with_llm(
         question=question,
         records=records,
         model=model,
-        base_url=base_url,
     )
 
     return {
