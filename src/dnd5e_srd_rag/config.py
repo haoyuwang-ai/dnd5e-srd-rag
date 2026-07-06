@@ -39,12 +39,26 @@ DEFAULT_PDF_PATH = RAW_DATA_DIR / "SRD_CC_v5.2.1.pdf"
 DEFAULT_EXTRACTED_PAGES_PATH = EXTRACTED_DATA_DIR / "srd-5.2.1-pages.jsonl"
 DEFAULT_ANNOTATED_PAGES_PATH = EXTRACTED_DATA_DIR / "srd-5.2.1-pages-annotated.jsonl"
 DEFAULT_CHUNKS_PATH = CHUNKS_DATA_DIR / "srd-5.2.1-chunks.jsonl"
-DEFAULT_CHROMA_PATH = VECTORSTORES_DIR / "chroma"
-DEFAULT_CHROMA_COLLECTION = "srd_5_2_1_en"
 
-DEFAULT_EMBEDDING_MODEL = os.getenv(
-    "EMBEDDING_MODEL",
+DEFAULT_EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "openai")
+
+DEFAULT_CHROMA_PATH = Path(
+    os.getenv("CHROMA_PATH", str(VECTORSTORES_DIR / "chroma"))
+)
+
+DEFAULT_CHROMA_COLLECTION = os.getenv(
+    "CHROMA_COLLECTION",
+    "srd_5_2_1_en",
+)
+
+DEFAULT_LOCAL_EMBEDDING_MODEL = os.getenv(
+    "LOCAL_EMBEDDING_MODEL",
     "Qwen/Qwen3-Embedding-0.6B",
+)
+
+DEFAULT_OPENAI_EMBEDDING_MODEL = os.getenv(
+    "OPENAI_EMBEDDING_MODEL",
+    "text-embedding-3-small",
 )
 
 DEFAULT_TOP_K = int(os.getenv("TOP_K", "5"))
