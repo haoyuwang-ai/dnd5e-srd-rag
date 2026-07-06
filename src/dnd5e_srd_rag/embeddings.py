@@ -21,7 +21,7 @@ class EmbeddingError(RuntimeError):
 
 # 缓存已加载的 embedding 模型，避免重复加载。
 # _MODEL: SentenceTransformer | None = None
-_MODEL = None
+_LOCAL_MODEL = None
 
 # sentence-transformers 模型，即 Qwen/Qwen3-Embedding-0.6B，后续可根据需要调整。
 def get_local_embedding_model(
